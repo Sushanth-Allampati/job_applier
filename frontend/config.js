@@ -4,4 +4,4 @@
 // If left blank (""), the frontend will use relative /api requests (compatible with Netlify rewrites/proxy)
 // or default to http://localhost:8000 when running locally.
 
-window.API_BASE_URL = "";
+window.API_BASE_URL = "https://job-assistant-backend-kupt.onrender.com";
