@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Application Assistant</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Job Application Assistant</h1>
+    <p class="subtitle">Score your resume, find matching roles, and see exactly what to add — all in one place.</p>
+  </header>
+
+  <main>
+    <section class="card" id="authCard">
+      <div id="loggedOutView">
+        <h2>Sign in to track applied jobs</h2>
+        <p class="note">Create an account so jobs you've applied to stay marked — across devices, every time you search.</p>
+        <label>Email
+          <input type="text" id="authEmail" placeholder="you@example.com">
+        </label>
+        <label>Password
+          <input type="password" id="authPassword" placeholder="At least 8 characters">
+        </label>
+        <div class="button-row">
+          <button id="loginBtn">Log In</button>
+          <button id="registerBtn" class="secondary">Create Account</button>
+        </div>
+        <p id="authError" class="note error" hidden></p>
+      </div>
+      <div id="loggedInView" hidden>
+        <p>Signed in as <strong id="userEmailLabel"></strong> — applied jobs will be remembered.</p>
+        <button id="logoutBtn" class="secondary">Log Out</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>1. Your details</h2>
+      <label>Resume (.pdf or .docx)
+        <input type="file" id="resumeFile" accept=".pdf,.docx">
+      </label>
+      <label>Target role
+        <input type="text" id="roleInput" placeholder="e.g. Machine Learning Engineer">
+      </label>
+      <label>Location (optional)
+        <input type="text" id="locationInput" placeholder="e.g. Hyderabad">
+      </label>
+      <label>Paste a specific job description (optional, for a precise ATS score)
+        <textarea id="jdInput" rows="6" placeholder="Paste the job description here to get a tailored ATS score..."></textarea>
+      </label>
+      <div class="button-row">
+        <button id="scoreBtn">Get ATS Score</button>
+        <button id="searchBtn">Find Matching Jobs</button>
+      </div>
+      <p id="apiBaseNote" class="note"></p>
+    </section>
+
+    <section class="card" id="scoreCard" hidden>
+      <h2>ATS Score</h2>
+      <div id="scoreCircle" class="score-circle">--</div>
+      <div id="scoreDetails"></div>
+    </section>
+
+    <section class="card" id="jobsCard" hidden>
+      <h2>Matching Jobs</h2>
+      <p id="loggedOutJobsNote" class="note" hidden>Log in above to have "applied" jobs remembered and moved into their own column.</p>
+      <div class="job-columns">
+        <div class="job-column">
+          <h3>To Apply <span id="toApplyCount" class="count-badge"></span></h3>
+          <div id="toApplyList"></div>
+        </div>
+        <div class="job-column">
+          <h3>Applied <span id="appliedCount" class="count-badge"></span></h3>
+          <div id="appliedList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Legitimacy checks are heuristic, not a guarantee — always verify companies independently before applying or sharing personal/payment information.</p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
