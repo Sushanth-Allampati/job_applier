@@ -1,85 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Job Application Assistant</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Application Assistant — AI ATS Scorer & Job Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Job Application Assistant</h1>
-    <p class="subtitle">Score your resume, find matching roles, and see exactly what to add — all in one place.</p>
+  <!-- Ambient background glow elements -->
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <header class="app-header">
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            <rect width="20" height="14" x="2" y="6" rx="2"></rect>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-name">CareerPilot <span class="brand-badge">AI</span></span>
+          <span class="brand-tagline">Job Application Assistant</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div id="backendStatusPill" class="status-pill status-checking">
+          <span class="status-dot"></span>
+          <span class="status-text">Connecting...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-sparkle">✨</span> Smart ATS Matcher & Verified Job Aggregator
+      </div>
+      <h1 class="hero-title">Supercharge Your Job Search With Intelligent ATS Scoring</h1>
+      <p class="hero-subtitle">Upload your resume, inspect keyword alignment in real-time, benchmark against roles, and discover high-intent opportunities across top platforms.</p>
+    </div>
   </header>
 
   <main>
-    <section class="card" id="authCard">
+    <!-- Authentication Card -->
+    <section class="card auth-card" id="authCard">
       <div id="loggedOutView">
-        <h2>Sign in to track applied jobs</h2>
-        <p class="note">Create an account so jobs you've applied to stay marked — across devices, every time you search.</p>
-        <label>Email
-          <input type="text" id="authEmail" placeholder="you@example.com">
-        </label>
-        <label>Password
-          <input type="password" id="authPassword" placeholder="At least 8 characters">
-        </label>
-        <div class="button-row">
-          <button id="loginBtn">Log In</button>
-          <button id="registerBtn" class="secondary">Create Account</button>
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon card-icon-auth">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div>
+              <h2>Sync Your Applications</h2>
+              <p class="card-desc">Sign in or register to preserve applied listings across sessions and devices.</p>
+            </div>
+          </div>
         </div>
-        <p id="authError" class="note error" hidden></p>
+
+        <div class="auth-grid">
+          <label class="form-group">
+            <span class="label-text">Email Address</span>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L1 7"></path>
+              </svg>
+              <input type="text" id="authEmail" placeholder="you@example.com" autocomplete="email">
+            </div>
+          </label>
+          <label class="form-group">
+            <span class="label-text">Password</span>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <input type="password" id="authPassword" placeholder="Minimum 8 characters" autocomplete="current-password">
+            </div>
+          </label>
+        </div>
+
+        <div class="button-row auth-actions">
+          <button id="loginBtn" class="btn btn-primary">
+            <span>Log In</span>
+          </button>
+          <button id="registerBtn" class="btn btn-secondary">
+            <span>Create Free Account</span>
+          </button>
+        </div>
+        <p id="authError" class="form-feedback error-feedback" hidden></p>
       </div>
-      <div id="loggedInView" hidden>
-        <p>Signed in as <strong id="userEmailLabel"></strong> — applied jobs will be remembered.</p>
-        <button id="logoutBtn" class="secondary">Log Out</button>
+
+      <div id="loggedInView" class="logged-in-container" hidden>
+        <div class="logged-in-profile">
+          <div class="avatar-circle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div>
+            <div class="profile-status">Signed in as</div>
+            <strong id="userEmailLabel" class="profile-email"></strong>
+          </div>
+        </div>
+        <button id="logoutBtn" class="btn btn-secondary btn-sm">Sign Out</button>
       </div>
     </section>
 
-    <section class="card">
-      <h2>1. Your details</h2>
-      <label>Resume (.pdf or .docx)
-        <input type="file" id="resumeFile" accept=".pdf,.docx">
-      </label>
-      <label>Target role
-        <input type="text" id="roleInput" placeholder="e.g. Machine Learning Engineer">
-      </label>
-      <label>Location (optional)
-        <input type="text" id="locationInput" placeholder="e.g. Hyderabad">
-      </label>
-      <label>Paste a specific job description (optional, for a precise ATS score)
-        <textarea id="jdInput" rows="6" placeholder="Paste the job description here to get a tailored ATS score..."></textarea>
-      </label>
-      <div class="button-row">
-        <button id="scoreBtn">Get ATS Score</button>
-        <button id="searchBtn">Find Matching Jobs</button>
+    <!-- Step 1: Profile & Resume Inputs -->
+    <section class="card main-form-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="step-badge">1</div>
+          <div>
+            <h2>Upload Resume & Configure Targets</h2>
+            <p class="card-desc">Job description is optional: score against your target role or paste a specific listing for precision.</p>
+          </div>
+        </div>
       </div>
-      <p id="apiBaseNote" class="note"></p>
+
+      <div class="form-body">
+        <!-- Modern File Upload Dropzone -->
+        <div class="form-group">
+          <span class="label-text">Resume Document (.pdf or .docx) <span class="badge-required">*Required</span></span>
+          <div id="resumeDropzone" class="dropzone">
+            <input type="file" id="resumeFile" accept=".pdf,.docx" class="dropzone-input">
+            <div id="dropzoneDefault" class="dropzone-prompt">
+              <div class="dropzone-icon-box">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" x2="12" y1="3" y2="15"></line>
+                </svg>
+              </div>
+              <div class="dropzone-text">
+                <span class="dropzone-strong">Click to browse</span> or drag & drop your resume
+              </div>
+              <div class="dropzone-subtext">Supports PDF and DOCX files up to 10MB</div>
+            </div>
+
+            <!-- Active file selection preview -->
+            <div id="dropzoneActive" class="dropzone-file-preview" hidden>
+              <div class="file-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <div class="file-info">
+                <div id="fileNameDisplay" class="file-name">resume.pdf</div>
+                <div id="fileSizeDisplay" class="file-size">0 KB</div>
+              </div>
+              <button type="button" id="removeFileBtn" class="file-remove-btn" title="Remove selected file">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Role with Autocomplete Suggestions -->
+        <div class="form-group role-input-group">
+          <div class="label-row">
+            <span class="label-text">Target Role <span class="badge-required">*Required for search & role score</span></span>
+          </div>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="roleInput" placeholder="e.g. Full Stack Developer, ML Engineer, DevOps..." autocomplete="off">
+            <div id="roleClearBtn" class="input-clear-btn" hidden title="Clear input">✕</div>
+          </div>
+
+          <!-- Dynamic Autocomplete Dropdown Menu -->
+          <div id="roleSuggestionsMenu" class="autocomplete-dropdown" hidden></div>
+
+          <!-- Quick Suggestion Chips -->
+          <div class="role-chips-wrapper">
+            <span class="chips-label">Popular:</span>
+            <div class="chips-scroll">
+              <button type="button" class="role-chip" data-role="Full Stack Developer">Full Stack</button>
+              <button type="button" class="role-chip" data-role="Frontend Developer">Frontend</button>
+              <button type="button" class="role-chip" data-role="Backend Engineer">Backend</button>
+              <button type="button" class="role-chip" data-role="Machine Learning Engineer">ML Engineer</button>
+              <button type="button" class="role-chip" data-role="Data Scientist">Data Scientist</button>
+              <button type="button" class="role-chip" data-role="DevOps Engineer">DevOps</button>
+              <button type="button" class="role-chip" data-role="Cloud Architect">Cloud Architect</button>
+              <button type="button" class="role-chip" data-role="UI/UX Designer">UI/UX Designer</button>
+              <button type="button" class="role-chip" data-role="Product Manager">Product Manager</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location Input -->
+        <div class="form-group">
+          <span class="label-text">Target Location <span class="badge-optional">Optional</span></span>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <input type="text" id="locationInput" placeholder="e.g. Hyderabad, Remote, Bengaluru, London...">
+          </div>
+        </div>
+
+        <!-- Job Description Textarea (Optional) -->
+        <div class="form-group">
+          <div class="label-row">
+            <span class="label-text">Specific Job Description <span class="badge-optional">Optional</span></span>
+            <span class="label-hint">Leave blank to benchmark against Target Role</span>
+          </div>
+          <div class="textarea-wrapper">
+            <textarea id="jdInput" rows="5" placeholder="Paste the full job description here if you want an exact match score against a specific job posting... (otherwise we score against your target role!)"></textarea>
+          </div>
+        </div>
+
+        <div class="button-row action-buttons">
+          <button id="scoreBtn" class="btn btn-primary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>Get ATS Score</span>
+          </button>
+          <button id="searchBtn" class="btn btn-accent btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>Find Matching Jobs</span>
+          </button>
+        </div>
+        <p id="apiBaseNote" class="api-note"></p>
+      </div>
     </section>
 
-    <section class="card" id="scoreCard" hidden>
-      <h2>ATS Score</h2>
-      <div id="scoreCircle" class="score-circle">--</div>
-      <div id="scoreDetails"></div>
+    <!-- Step 2: ATS Score Results Card -->
+    <section class="card score-card" id="scoreCard" hidden>
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="step-badge">2</div>
+          <div>
+            <h2>ATS Compatibility Analysis</h2>
+            <div id="scoreBenchmarkLabel" class="benchmark-badge">Targeted Analysis</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="score-overview">
+        <div class="score-visual-container">
+          <div class="gauge-container">
+            <svg class="gauge-svg" viewBox="0 0 120 120">
+              <circle class="gauge-bg" cx="60" cy="60" r="52"></circle>
+              <circle id="gaugeProgress" class="gauge-meter" cx="60" cy="60" r="52"></circle>
+            </svg>
+            <div id="scoreCircle" class="score-number">--</div>
+          </div>
+          <div id="scoreRatingText" class="score-rating">Evaluating...</div>
+        </div>
+
+        <div class="score-breakdown-panel">
+          <div id="scoreDetails"></div>
+        </div>
+      </div>
     </section>
 
-    <section class="card" id="jobsCard" hidden>
-      <h2>Matching Jobs</h2>
-      <p id="loggedOutJobsNote" class="note" hidden>Log in above to have "applied" jobs remembered and moved into their own column.</p>
+    <!-- Step 3: Matching Jobs Card -->
+    <section class="card jobs-card" id="jobsCard" hidden>
+      <div class="card-header jobs-header-wrap">
+        <div class="card-title-group">
+          <div class="step-badge">3</div>
+          <div>
+            <h2>Matching Job Postings</h2>
+            <p class="card-desc">Real-time aggregated roles with legitimacy checks & per-job keyword gaps.</p>
+          </div>
+        </div>
+
+        <div class="jobs-view-switch">
+          <button id="viewAllTab" class="tab-btn active">All Results</button>
+          <button id="viewToApplyTab" class="tab-btn">To Apply (<span id="toApplyCount">0</span>)</button>
+          <button id="viewAppliedTab" class="tab-btn">Applied (<span id="appliedCount">0</span>)</button>
+        </div>
+      </div>
+
+      <p id="loggedOutJobsNote" class="auth-reminder-note" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        Sign in to save jobs as applied across sessions and manage your pipeline.
+      </p>
+
       <div class="job-columns">
-        <div class="job-column">
-          <h3>To Apply <span id="toApplyCount" class="count-badge"></span></h3>
-          <div id="toApplyList"></div>
+        <div class="job-column" id="colToApply">
+          <div class="column-header">
+            <h3>To Apply <span class="count-badge" id="toApplyBadge">0</span></h3>
+          </div>
+          <div id="toApplyList" class="job-items-list"></div>
         </div>
-        <div class="job-column">
-          <h3>Applied <span id="appliedCount" class="count-badge"></span></h3>
-          <div id="appliedList"></div>
+
+        <div class="job-column" id="colApplied">
+          <div class="column-header">
+            <h3>Applied <span class="count-badge" id="appliedBadge">0</span></h3>
+          </div>
+          <div id="appliedList" class="job-items-list"></div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>Legitimacy checks are heuristic, not a guarantee — always verify companies independently before applying or sharing personal/payment information.</p>
+  <footer class="app-footer">
+    <p>Legitimacy verdicts are heuristic evaluations, not guarantees. Always independently verify employers before submitting applications or personal data.</p>
   </footer>
 
   <script src="config.js"></script>

@@ -122,7 +122,8 @@ def read_me(current_user: User = Depends(get_current_user)):
 @app.post("/api/score-resume", response_model=ScoreResponse)
 async def api_score_resume(
     resume: UploadFile = File(...),
-    job_description: str = Form(...),
+    job_description: str = Form(""),
+    role: str = Form(""),
 ):
     file_bytes = await resume.read()
     try:
@@ -130,7 +131,7 @@ async def api_score_resume(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 
-    result = score_resume(resume_text, job_description)
+    result = score_resume(resume_text, job_description=job_description, role=role)
     return ScoreResponse(**asdict(result))
 
 
