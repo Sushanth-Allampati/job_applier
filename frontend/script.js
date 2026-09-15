@@ -665,7 +665,7 @@ if (searchBtn) {
       }
 
       const data = await res.json();
-      renderJobs(data);
+      renderJobs(data, false, true);
       const totalCount = (data.to_apply_count || 0) + (data.applied_count || 0);
       const filterLabel = selectedPositionType === "internship" ? "internship" : "job";
       showToast(`Found ${totalCount} matching ${filterLabel} opportunities!`, "success");
@@ -677,6 +677,8 @@ if (searchBtn) {
   });
 }
 
+let currentJobsData = null;
+
 function jobCardHtml(job, isApplied) {
   const verdictMap = {
     likely_legit: { label: "Likely Legit", class: "badge-likely_legit" },
@@ -684,12 +686,13 @@ function jobCardHtml(job, isApplied) {
     high_risk: { label: "High Risk Warning", class: "badge-high_risk" },
   };
   const verdictInfo = verdictMap[job.legitimacy_verdict] || { label: job.legitimacy_verdict, class: "badge-verify" };
+  const isOfficial = !!job.is_official_career;
 
   return `
-    <div class="job-item ${isApplied ? "is-applied" : ""}" data-job-id="${escapeHtml(job.job_id)}">
+    <div class="job-item ${isApplied ? "is-applied" : ""} ${isOfficial ? "is-official-career" : ""}" data-job-id="${escapeHtml(job.job_id)}">
       <div class="job-top-bar">
         <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-          <span class="badge ${verdictInfo.class}">● ${verdictInfo.label}</span>
+          ${isOfficial ? `<span class="badge badge-official">🏢 Official Company Career Site</span>` : `<span class="badge ${verdictInfo.class}">● ${verdictInfo.label}</span>`}
           ${job.position_type ? `<span class="badge ${job.position_type === "Internship" ? "badge-likely_legit" : "badge-optional"}">${job.position_type === "Internship" ? "🎓 Internship" : "💼 " + escapeHtml(job.position_type)}</span>` : ""}
           ${job.experience_level && job.experience_level !== "Any Experience" ? `<span class="badge badge-optional">⭐ ${escapeHtml(job.experience_level)}</span>` : ""}
         </div>
@@ -699,6 +702,7 @@ function jobCardHtml(job, isApplied) {
       <h3>${escapeHtml(job.title)}</h3>
       <div class="job-meta">
         <strong>${escapeHtml(job.company)}</strong>
+        ${isOfficial ? `<span class="verified-icon" title="Verified Employer Direct Portal">✓</span>` : ""}
         <span>•</span>
         <span>📍 ${escapeHtml(job.location || "Remote / India")}</span>
       </div>
@@ -720,8 +724,8 @@ function jobCardHtml(job, isApplied) {
       ` : ""}
 
       <div class="job-action-row">
-        <a class="apply-link" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noopener noreferrer">
-          <span>Apply on Source</span>
+        <a class="apply-link" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noopener noreferrer" style="${isOfficial ? 'color: #c084fc; font-weight: 800;' : ''}">
+          <span>${isOfficial ? 'Apply on Official Portal' : 'Open / Apply Direct'}</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
         </a>
 
@@ -737,7 +741,7 @@ function jobCardHtml(job, isApplied) {
       </div>
 
       <details class="details-expander">
-        <summary>Why this verdict? Details & heuristic report</summary>
+        <summary>Why this verdict? Details & verification</summary>
         <ul class="note-list">
           ${(job.legitimacy_reasons || []).map(r => `<li>${escapeHtml(r)}</li>`).join("")}
         </ul>
@@ -746,50 +750,69 @@ function jobCardHtml(job, isApplied) {
   `;
 }
 
-function renderJobs(data) {
+function renderJobs(data, filterOnlyOfficial = false, shouldScroll = false) {
   if (!jobsCard) return;
   jobsCard.hidden = false;
+  currentJobsData = data;
 
-  const toApplyNum = data.to_apply_count || (data.to_apply ? data.to_apply.length : 0);
-  const appliedNum = data.applied_count || (data.applied ? data.applied.length : 0);
+  const toApplyListItems = data.to_apply || [];
+  const appliedListItems = data.applied || [];
+
+  const displayToApply = filterOnlyOfficial ? toApplyListItems.filter(j => j.is_official_career) : toApplyListItems;
+  const displayApplied = filterOnlyOfficial ? appliedListItems.filter(j => j.is_official_career) : appliedListItems;
+
+  const totalOfficial = toApplyListItems.filter(j => j.is_official_career).length + appliedListItems.filter(j => j.is_official_career).length;
+  const officialCountEl = document.getElementById("officialCount");
+  if (officialCountEl) officialCountEl.textContent = totalOfficial;
+
+  const toApplyNum = toApplyListItems.length;
+  const appliedNum = appliedListItems.length;
 
   if (toApplyCount) toApplyCount.textContent = toApplyNum;
   if (appliedCount) appliedCount.textContent = appliedNum;
-  if (toApplyBadge) toApplyBadge.textContent = toApplyNum;
-  if (appliedBadge) appliedBadge.textContent = appliedNum;
+  if (toApplyBadge) toApplyBadge.textContent = displayToApply.length;
+  if (appliedBadge) appliedBadge.textContent = displayApplied.length;
 
   if (toApplyList) {
-    toApplyList.innerHTML = data.to_apply && data.to_apply.length
-      ? data.to_apply.map(j => jobCardHtml(j, false)).join("")
-      : `<div class="empty-col-note">No new opportunities in this column.</div>`;
+    toApplyList.innerHTML = displayToApply.length
+      ? displayToApply.map(j => jobCardHtml(j, false)).join("")
+      : `<div class="empty-col-note">${filterOnlyOfficial ? 'No official portals in this column.' : 'No opportunities in this column.'}</div>`;
   }
 
   if (appliedList) {
-    appliedList.innerHTML = data.applied && data.applied.length
-      ? data.applied.map(j => jobCardHtml(j, true)).join("")
+    appliedList.innerHTML = displayApplied.length
+      ? displayApplied.map(j => jobCardHtml(j, true)).join("")
       : `<div class="empty-col-note">No jobs marked as applied yet.</div>`;
   }
 
-  jobsCard.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (shouldScroll) {
+    jobsCard.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 // 10. Segmented View Switcher Tabs (Mobile / Filter Tabs)
 const viewAllTab = document.getElementById("viewAllTab");
+const viewOfficialTab = document.getElementById("viewOfficialTab");
 const viewToApplyTab = document.getElementById("viewToApplyTab");
 const viewAppliedTab = document.getElementById("viewAppliedTab");
 const colToApply = document.getElementById("colToApply");
 const colApplied = document.getElementById("colApplied");
 
-function setJobTab(activeTab, showToApply, showApplied) {
-  [viewAllTab, viewToApplyTab, viewAppliedTab].forEach(t => t && t.classList.remove("active"));
+function setJobTab(activeTab, showToApply, showApplied, onlyOfficial = false) {
+  [viewAllTab, viewOfficialTab, viewToApplyTab, viewAppliedTab].forEach(t => t && t.classList.remove("active"));
   if (activeTab) activeTab.classList.add("active");
   if (colToApply) colToApply.style.display = showToApply ? "block" : "none";
   if (colApplied) colApplied.style.display = showApplied ? "block" : "none";
+
+  if (currentJobsData) {
+    renderJobs(currentJobsData, onlyOfficial, false);
+  }
 }
 
-if (viewAllTab) viewAllTab.addEventListener("click", () => setJobTab(viewAllTab, true, true));
-if (viewToApplyTab) viewToApplyTab.addEventListener("click", () => setJobTab(viewToApplyTab, true, false));
-if (viewAppliedTab) viewAppliedTab.addEventListener("click", () => setJobTab(viewAppliedTab, false, true));
+if (viewAllTab) viewAllTab.addEventListener("click", () => setJobTab(viewAllTab, true, true, false));
+if (viewOfficialTab) viewOfficialTab.addEventListener("click", () => setJobTab(viewOfficialTab, true, true, true));
+if (viewToApplyTab) viewToApplyTab.addEventListener("click", () => setJobTab(viewToApplyTab, true, false, false));
+if (viewAppliedTab) viewAppliedTab.addEventListener("click", () => setJobTab(viewAppliedTab, false, true, false));
 
 // 11. Event Delegation for Mark/Unmark Applied
 if (jobsCard) {

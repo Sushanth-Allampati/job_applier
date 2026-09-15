@@ -1092,6 +1092,39 @@ textarea {
   background: rgba(6, 44, 28, 0.2);
 }
 
+.job-item.is-official-career {
+  background: rgba(30, 27, 75, 0.42);
+  border: 1.5px solid rgba(139, 92, 246, 0.55);
+  box-shadow: 0 4px 22px rgba(139, 92, 246, 0.18);
+}
+
+.job-item.is-official-career:hover {
+  border-color: rgba(168, 85, 247, 0.85);
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.32);
+}
+
+.badge-official {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(236, 72, 153, 0.25) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  color: #e9d5ff;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.verified-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #6366f1;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  margin-left: 4px;
+}
+
 .job-top-bar {
   display: flex;
   justify-content: space-between;
