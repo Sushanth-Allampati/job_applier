@@ -147,6 +147,8 @@ async def api_score_resume(
 async def api_search_jobs(
     role: str = Form(...),
     location: str = Form(""),
+    experience: str = Form("any"),
+    job_type: str = Form("all"),
     resume: UploadFile | None = File(None),
     current_user: User | None = Depends(get_current_user_optional),
     db: Session = Depends(get_db),
@@ -159,7 +161,13 @@ async def api_search_jobs(
         except ValueError:
             resume_text = None  # non-fatal — search still works without it
 
-    listings = await search_jobs(role=role, location=location, resume_text=resume_text)
+    listings = await search_jobs(
+        role=role,
+        location=location,
+        experience=experience,
+        job_type=job_type,
+        resume_text=resume_text,
+    )
 
     applied_ids: set[str] = set()
     if current_user is not None:

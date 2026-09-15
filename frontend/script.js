@@ -567,6 +567,66 @@ const searchBtn = document.getElementById("searchBtn");
 const jobsCard = document.getElementById("jobsCard");
 const toApplyList = document.getElementById("toApplyList");
 const appliedList = document.getElementById("appliedList");
+// Position Type & Experience Level Filter State (RoboApply Mode)
+let selectedPositionType = "all";
+let selectedExperience = "any";
+
+const internFilterNotice = document.getElementById("internFilterNotice");
+const positionPills = document.querySelectorAll("#positionTypeGroup .selector-pill");
+const experiencePills = document.querySelectorAll("#experienceLevelGroup .selector-pill");
+
+positionPills.forEach(pill => {
+  pill.addEventListener("click", () => {
+    positionPills.forEach(p => p.classList.remove("active"));
+    pill.classList.add("active");
+    selectedPositionType = pill.dataset.type;
+
+    if (selectedPositionType === "internship") {
+      if (internFilterNotice) internFilterNotice.hidden = false;
+      // Auto-sync experience level to student/intern (0 yrs)
+      experiencePills.forEach(p => {
+        p.classList.toggle("active", p.dataset.exp === "intern");
+      });
+      selectedExperience = "intern";
+      showToast("Position set to: 🎓 Internship (showing only internships)", "info");
+    } else {
+      if (internFilterNotice) internFilterNotice.hidden = true;
+      if (selectedExperience === "intern") {
+        experiencePills.forEach(p => {
+          p.classList.toggle("active", p.dataset.exp === "any");
+        });
+        selectedExperience = "any";
+      }
+    }
+  });
+});
+
+experiencePills.forEach(pill => {
+  pill.addEventListener("click", () => {
+    experiencePills.forEach(p => p.classList.remove("active"));
+    pill.classList.add("active");
+    selectedExperience = pill.dataset.exp;
+
+    if (selectedExperience === "intern") {
+      // Auto-sync position type to internship
+      positionPills.forEach(p => {
+        p.classList.toggle("active", p.dataset.type === "internship");
+      });
+      selectedPositionType = "internship";
+      if (internFilterNotice) internFilterNotice.hidden = false;
+      showToast("Experience set to: Student / 0 yrs (showing only internships)", "info");
+    } else {
+      if (selectedPositionType === "internship") {
+        positionPills.forEach(p => {
+          p.classList.toggle("active", p.dataset.type === "all");
+        });
+        selectedPositionType = "all";
+        if (internFilterNotice) internFilterNotice.hidden = true;
+      }
+    }
+  });
+});
+
 const toApplyCount = document.getElementById("toApplyCount");
 const appliedCount = document.getElementById("appliedCount");
 const toApplyBadge = document.getElementById("toApplyBadge");
@@ -588,6 +648,8 @@ if (searchBtn) {
       const formData = new FormData();
       formData.append("role", role);
       formData.append("location", locationInput?.value.trim() || "");
+      formData.append("experience", selectedExperience);
+      formData.append("job_type", selectedPositionType);
       const file = resumeFileInput?.files[0];
       if (file) formData.append("resume", file);
 
@@ -604,7 +666,9 @@ if (searchBtn) {
 
       const data = await res.json();
       renderJobs(data);
-      showToast(`Found ${data.to_apply_count + data.applied_count} matching listings!`, "success");
+      const totalCount = (data.to_apply_count || 0) + (data.applied_count || 0);
+      const filterLabel = selectedPositionType === "internship" ? "internship" : "job";
+      showToast(`Found ${totalCount} matching ${filterLabel} opportunities!`, "success");
     } catch (e) {
       showToast(e.message, "error");
     } finally {
@@ -624,7 +688,11 @@ function jobCardHtml(job, isApplied) {
   return `
     <div class="job-item ${isApplied ? "is-applied" : ""}" data-job-id="${escapeHtml(job.job_id)}">
       <div class="job-top-bar">
-        <span class="badge ${verdictInfo.class}">● ${verdictInfo.label}</span>
+        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+          <span class="badge ${verdictInfo.class}">● ${verdictInfo.label}</span>
+          ${job.position_type ? `<span class="badge ${job.position_type === "Internship" ? "badge-likely_legit" : "badge-optional"}">${job.position_type === "Internship" ? "🎓 Internship" : "💼 " + escapeHtml(job.position_type)}</span>` : ""}
+          ${job.experience_level && job.experience_level !== "Any Experience" ? `<span class="badge badge-optional">⭐ ${escapeHtml(job.experience_level)}</span>` : ""}
+        </div>
         <span class="badge-optional">${escapeHtml(job.source)}</span>
       </div>
 
