@@ -30,11 +30,17 @@ allowed_origins_raw = os.getenv("ALLOWED_ORIGINS", "*")
 if allowed_origins_raw.strip() == "*":
     allowed_origins = ["*"]
 else:
-    allowed_origins = [o.strip() for o in allowed_origins_raw.split(",") if o.strip()]
+    allowed_origins = []
+    for o in allowed_origins_raw.split(","):
+        clean = o.strip().rstrip("/")
+        if clean:
+            allowed_origins.append(clean)
+            allowed_origins.append(clean + "/")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"^https://.*\.netlify\.app$",
     allow_methods=["*"],
     allow_headers=["*"],
 )
