@@ -36,31 +36,77 @@ candidate candidates apply application applicants
 # Curated dictionary of common technical / professional skill terms.
 # Not exhaustive — it's a relevance BOOST layer, not a hard filter.
 SKILL_DICTIONARY = {
-    "python", "java", "javascript", "typescript", "c++", "c#", "sql", "nosql",
-    "react", "angular", "vue", "node.js", "django", "flask", "fastapi",
-    "spring", "aws", "azure", "gcp", "docker", "kubernetes", "terraform",
-    "machine learning", "deep learning", "nlp", "computer vision",
-    "tensorflow", "pytorch", "scikit-learn", "pandas", "numpy",
-    "data analysis", "data engineering", "data science", "etl",
-    "rest api", "graphql", "microservices", "ci/cd", "git", "linux",
-    "agile", "scrum", "communication", "leadership", "problem solving",
-    "project management", "excel", "power bi", "tableau", "spark",
-    "hadoop", "airflow", "mongodb", "postgresql", "mysql", "redis",
-    "html", "css", "figma", "ui/ux", "testing", "unit testing",
-    "system design", "object oriented", "algorithms", "data structures",
+    "python", "java", "javascript", "typescript", "c++", "c#", "golang", "ruby", "rust", "php", "scala", "kotlin", "swift",
+    "sql", "nosql", "react", "angular", "vue", "next.js", "node.js", "express", "django", "flask", "fastapi", "spring", "spring boot",
+    "aws", "azure", "gcp", "docker", "kubernetes", "terraform", "ansible", "helm", "linux", "ci/cd", "jenkins", "github actions",
+    "machine learning", "deep learning", "nlp", "computer vision", "generative ai", "llm", "rag", "langchain",
+    "tensorflow", "pytorch", "scikit-learn", "pandas", "numpy", "opencv", "huggingface",
+    "data analysis", "data engineering", "data science", "etl", "snowflake", "spark", "hadoop", "airflow", "kafka", "rabbitmq", "dbt",
+    "rest api", "graphql", "grpc", "microservices", "git", "system design", "object oriented", "algorithms", "data structures",
+    "mongodb", "postgresql", "mysql", "redis", "elasticsearch", "cassandra", "dynamodb", "prisma",
+    "html", "css", "tailwindcss", "redux", "figma", "ui/ux",
+    "testing", "unit testing", "integration testing", "selenium", "playwright", "cypress", "jest", "pytest",
+    "cybersecurity", "owasp", "penetration testing", "devops", "sre", "prometheus", "grafana", "datadog",
+    "agile", "scrum", "communication", "leadership", "problem solving", "project management", "excel", "power bi", "tableau",
 }
+
+SKILL_ALIASES = {
+    "k8s": "kubernetes",
+    "k8": "kubernetes",
+    "reactjs": "react",
+    "react.js": "react",
+    "nodejs": "node.js",
+    "vuejs": "vue",
+    "nextjs": "next.js",
+    "expressjs": "express",
+    "postgres": "postgresql",
+    "postgresql db": "postgresql",
+    "aws cloud": "aws",
+    "azure cloud": "azure",
+    "gcp cloud": "gcp",
+    "google cloud": "gcp",
+    "ci cd": "ci/cd",
+    "cicd": "ci/cd",
+    "ts": "typescript",
+    "js": "javascript",
+    "py": "python",
+    "ml": "machine learning",
+    "dl": "deep learning",
+    "genai": "generative ai",
+    "gen ai": "generative ai",
+    "tf": "tensorflow",
+    "sklearn": "scikit-learn",
+    "tailwind": "tailwindcss",
+    "mongo": "mongodb",
+}
+
+
+def normalize_skill(term: str) -> str:
+    clean = term.strip().lower()
+    return SKILL_ALIASES.get(clean, clean)
 
 
 def _tokenize(text: str) -> list[str]:
     text = text.lower()
-    # keep tokens like "c++", "node.js" reasonably intact
-    raw_tokens = re.findall(r"[a-z][a-z0-9+.#/]*", text)
+    # Normalize common multi-word or hyphenated skill aliases in raw text
+    text = re.sub(r"\bci/cd\b", "ci_cd", text)
+    text = re.sub(r"\bnode\.js\b", "node_js", text)
+    text = re.sub(r"\bnext\.js\b", "next_js", text)
+
+    raw_tokens = re.findall(r"[a-z][a-z0-9+._#/]*", text)
     tokens = []
     for t in raw_tokens:
-        # strip trailing punctuation that isn't part of a known pattern
-        # (e.g. "experience." -> "experience", but keep "node.js", "c++", "c#")
-        if t not in SKILL_DICTIONARY:
-            t = t.rstrip(".")
+        if t == "ci_cd":
+            t = "ci/cd"
+        elif t == "node_js":
+            t = "node.js"
+        elif t == "next_js":
+            t = "next.js"
+        else:
+            if t not in SKILL_DICTIONARY and t not in SKILL_ALIASES:
+                t = t.rstrip(".")
+
+        t = normalize_skill(t)
         if t and t not in STOPWORDS and len(t) > 1:
             tokens.append(t)
     return tokens
@@ -70,7 +116,7 @@ def _bigrams(tokens: list[str]) -> list[str]:
     return [f"{a} {b}" for a, b in zip(tokens, tokens[1:])]
 
 
-def extract_keywords(text: str, top_n: int = 25) -> list[str]:
+def extract_keywords(text: str, top_n: int = 30) -> list[str]:
     tokens = _tokenize(text)
     bigrams = _bigrams(tokens)
 
@@ -79,15 +125,19 @@ def extract_keywords(text: str, top_n: int = 25) -> list[str]:
     counts.update(bigrams)
 
     scored: list[tuple[str, float]] = []
+    seen = set()
     for term, freq in counts.items():
-        if freq < 1:
+        norm_term = normalize_skill(term)
+        if norm_term in seen or freq < 1:
             continue
-        weight = freq
-        if term in SKILL_DICTIONARY:
-            weight += 5  # boost known professional/technical terms
-        elif len(term.split()) == 1 and freq < 2:
-            continue  # skip rare, likely-noise unigrams
-        scored.append((term, weight))
+        seen.add(norm_term)
+
+        weight = float(freq)
+        if norm_term in SKILL_DICTIONARY:
+            weight += 6.0  # High relevance boost for recognized tech/domain skills
+        elif len(norm_term.split()) == 1 and freq < 2:
+            continue  # skip rare noisy unigrams
+        scored.append((norm_term, weight))
 
     scored.sort(key=lambda x: x[1], reverse=True)
     return [term for term, _ in scored[:top_n]]

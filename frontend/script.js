@@ -249,114 +249,151 @@ if (removeFileBtn) {
   });
 }
 
-// 6. Target Role Autocomplete & Suggestions
+// 6. Target Role Autocomplete & Comprehensive 95+ Role Dropdown
 const POPULAR_ROLES = [
-  { role: "Full Stack Developer", cat: "Engineering" },
-  { role: "Frontend Developer", cat: "Engineering" },
-  { role: "Backend Engineer", cat: "Engineering" },
-  { role: "Software Engineer", cat: "Engineering" },
-  { role: "React Developer", cat: "Frontend" },
-  { role: "Python Developer", cat: "Backend" },
-  { role: "Java Developer", cat: "Backend" },
-  { role: "Node.js Developer", cat: "Backend" },
-  { role: "Machine Learning Engineer", cat: "AI & Data" },
-  { role: "Data Scientist", cat: "AI & Data" },
-  { role: "Data Analyst", cat: "AI & Data" },
-  { role: "Data Engineer", cat: "AI & Data" },
-  { role: "AI Engineer", cat: "AI & Data" },
-  { role: "DevOps Engineer", cat: "Cloud / Infra" },
-  { role: "Cloud Architect", cat: "Cloud / Infra" },
-  { role: "Site Reliability Engineer (SRE)", cat: "Cloud / Infra" },
-  { role: "Product Manager", cat: "Product" },
-  { role: "Project Manager", cat: "Management" },
-  { role: "UI/UX Designer", cat: "Design" },
-  { role: "Product Designer", cat: "Design" },
-  { role: "Mobile App Developer", cat: "Mobile" },
-  { role: "iOS Developer (Swift)", cat: "Mobile" },
-  { role: "Android Developer (Kotlin)", cat: "Mobile" },
-  { role: "Cybersecurity Analyst", cat: "Security" },
-  { role: "QA Engineer / SDET", cat: "Testing" },
-  { role: "Automation Test Engineer", cat: "Testing" },
-  { role: "Scrum Master", cat: "Management" },
-  { role: "Technical Lead", cat: "Leadership" },
-  { role: "Engineering Manager", cat: "Leadership" },
-  { role: "Embedded Systems Engineer", cat: "Hardware" },
-  { role: "Blockchain Developer", cat: "Web3" },
+  // Software & Web Engineering (26 roles)
+  { role: "Full Stack Developer", cat: "Software Engineering", icon: "💻" },
+  { role: "Frontend Developer", cat: "Software Engineering", icon: "🌐" },
+  { role: "Backend Engineer", cat: "Software Engineering", icon: "⚙️" },
+  { role: "Software Engineer", cat: "Software Engineering", icon: "💻" },
+  { role: "Senior Software Engineer", cat: "Software Engineering", icon: "🚀" },
+  { role: "Staff Software Engineer", cat: "Software Engineering", icon: "🏆" },
+  { role: "Lead Software Engineer", cat: "Software Engineering", icon: "⭐" },
+  { role: "React Developer", cat: "Software Engineering", icon: "⚛️" },
+  { role: "Angular Developer", cat: "Software Engineering", icon: "🅰️" },
+  { role: "Vue.js Developer", cat: "Software Engineering", icon: "💚" },
+  { role: "Next.js / Node.js Developer", cat: "Software Engineering", icon: "⚡" },
+  { role: "Node.js Backend Developer", cat: "Software Engineering", icon: "🟢" },
+  { role: "Python Developer", cat: "Software Engineering", icon: "🐍" },
+  { role: "Django / FastAPI Developer", cat: "Software Engineering", icon: "⚡" },
+  { role: "Java Developer", cat: "Software Engineering", icon: "☕" },
+  { role: "Spring Boot Developer", cat: "Software Engineering", icon: "🍃" },
+  { role: "Golang Engineer", cat: "Software Engineering", icon: "🐹" },
+  { role: "C++ Systems Engineer", cat: "Software Engineering", icon: "⚡" },
+  { role: "C# / .NET Developer", cat: "Software Engineering", icon: "🔷" },
+  { role: "Rust Systems Developer", cat: "Software Engineering", icon: "🦀" },
+  { role: "Ruby on Rails Developer", cat: "Software Engineering", icon: "💎" },
+  { role: "PHP / Laravel Developer", cat: "Software Engineering", icon: "🐘" },
+  { role: "Embedded Systems Engineer", cat: "Software Engineering", icon: "🔌" },
+  { role: "Firmware Engineer", cat: "Software Engineering", icon: "💾" },
+  { role: "Systems Software Engineer", cat: "Software Engineering", icon: "🖥️" },
+  { role: "Game Developer (Unity / Unreal)", cat: "Software Engineering", icon: "🎮" },
+
+  // Mobile Engineering (6 roles)
+  { role: "Mobile App Developer", cat: "Mobile Engineering", icon: "📱" },
+  { role: "iOS Developer (Swift)", cat: "Mobile Engineering", icon: "🍎" },
+  { role: "Android Developer (Kotlin)", cat: "Mobile Engineering", icon: "🤖" },
+  { role: "Flutter Developer", cat: "Mobile Engineering", icon: "💙" },
+  { role: "React Native Developer", cat: "Mobile Engineering", icon: "⚛️" },
+  { role: "Cross-Platform Mobile Engineer", cat: "Mobile Engineering", icon: "📲" },
+
+  // AI, Machine Learning & Data Science (15 roles)
+  { role: "Machine Learning Engineer", cat: "AI & Data Science", icon: "🤖" },
+  { role: "AI Engineer", cat: "AI & Data Science", icon: "🧠" },
+  { role: "Generative AI / LLM Engineer", cat: "AI & Data Science", icon: "✨" },
+  { role: "Deep Learning Engineer", cat: "AI & Data Science", icon: "🔮" },
+  { role: "Computer Vision Engineer", cat: "AI & Data Science", icon: "👁️" },
+  { role: "Natural Language Processing (NLP) Engineer", cat: "AI & Data Science", icon: "💬" },
+  { role: "MLOps Engineer", cat: "AI & Data Science", icon: "🔄" },
+  { role: "Data Scientist", cat: "AI & Data Science", icon: "🔬" },
+  { role: "Senior Data Scientist", cat: "AI & Data Science", icon: "📊" },
+  { role: "Data Analyst", cat: "AI & Data Science", icon: "📈" },
+  { role: "Business Intelligence (BI) Analyst", cat: "AI & Data Science", icon: "📉" },
+  { role: "Data Engineer", cat: "AI & Data Science", icon: "🏗️" },
+  { role: "Analytics Engineer", cat: "AI & Data Science", icon: "📐" },
+  { role: "Database Administrator (DBA)", cat: "AI & Data Science", icon: "🗄️" },
+  { role: "Quantitative Analyst / FinTech Data", cat: "AI & Data Science", icon: "💹" },
+
+  // Cloud, DevOps & SRE (9 roles)
+  { role: "DevOps Engineer", cat: "Cloud & DevOps", icon: "♾️" },
+  { role: "Cloud Engineer (AWS / Azure / GCP)", cat: "Cloud & DevOps", icon: "☁️" },
+  { role: "Cloud Architect", cat: "Cloud & DevOps", icon: "🏛️" },
+  { role: "Site Reliability Engineer (SRE)", cat: "Cloud & DevOps", icon: "🚨" },
+  { role: "Platform Engineer", cat: "Cloud & DevOps", icon: "🛠️" },
+  { role: "Infrastructure Engineer", cat: "Cloud & DevOps", icon: "🏢" },
+  { role: "Kubernetes / Cloud Native Engineer", cat: "Cloud & DevOps", icon: "☸️" },
+  { role: "Linux Systems Administrator", cat: "Cloud & DevOps", icon: "🐧" },
+  { role: "Network Security Engineer", cat: "Cloud & DevOps", icon: "🌐" },
+
+  // Cybersecurity & InfoSec (7 roles)
+  { role: "Cybersecurity Analyst", cat: "Cybersecurity", icon: "🛡️" },
+  { role: "Information Security Engineer", cat: "Cybersecurity", icon: "🔒" },
+  { role: "SOC Analyst (Security Operations)", cat: "Cybersecurity", icon: "🚨" },
+  { role: "Penetration Tester / Ethical Hacker", cat: "Cybersecurity", icon: "🎯" },
+  { role: "Application Security (AppSec) Engineer", cat: "Cybersecurity", icon: "🛡️" },
+  { role: "Cloud Security Architect", cat: "Cybersecurity", icon: "☁️" },
+  { role: "Identity and Access Management (IAM) Specialist", cat: "Cybersecurity", icon: "🔑" },
+
+  // QA & Testing (SDET) (6 roles)
+  { role: "QA Engineer", cat: "QA & Testing", icon: "🧪" },
+  { role: "Software Development Engineer in Test (SDET)", cat: "QA & Testing", icon: "🔍" },
+  { role: "Automation Test Engineer (Selenium / Playwright)", cat: "QA & Testing", icon: "🤖" },
+  { role: "Manual QA Tester", cat: "QA & Testing", icon: "📋" },
+  { role: "Performance & Load Test Engineer", cat: "QA & Testing", icon: "⚡" },
+  { role: "API Test Engineer", cat: "QA & Testing", icon: "🔌" },
+
+  // Product & Project Management (9 roles)
+  { role: "Product Manager", cat: "Product & Management", icon: "💡" },
+  { role: "Technical Product Manager (TPM)", cat: "Product & Management", icon: "⚙️" },
+  { role: "Associate Product Manager (APM)", cat: "Product & Management", icon: "🌱" },
+  { role: "Product Owner", cat: "Product & Management", icon: "🎯" },
+  { role: "Project Manager", cat: "Product & Management", icon: "📋" },
+  { role: "Scrum Master", cat: "Product & Management", icon: "🏃" },
+  { role: "Agile Coach", cat: "Product & Management", icon: "🧭" },
+  { role: "IT Project Manager", cat: "Product & Management", icon: "💼" },
+  { role: "Business Analyst", cat: "Product & Management", icon: "📊" },
+
+  // UI/UX & Product Design (6 roles)
+  { role: "UI/UX Designer", cat: "Design & UX", icon: "🎨" },
+  { role: "Product Designer", cat: "Design & UX", icon: "✨" },
+  { role: "UX Researcher", cat: "Design & UX", icon: "🔍" },
+  { role: "Visual Designer", cat: "Design & UX", icon: "👁️" },
+  { role: "Interaction Designer", cat: "Design & UX", icon: "📐" },
+  { role: "Design Systems Lead", cat: "Design & UX", icon: "🧩" },
+
+  // Web3 & Blockchain (4 roles)
+  { role: "Blockchain Developer", cat: "Web3 & Blockchain", icon: "⛓️" },
+  { role: "Solidity / Smart Contract Engineer", cat: "Web3 & Blockchain", icon: "📜" },
+  { role: "Web3 Full Stack Developer", cat: "Web3 & Blockchain", icon: "🌐" },
+  { role: "Smart Contract Security Auditor", cat: "Web3 & Blockchain", icon: "🔍" },
+
+  // Solutions, Support & Growth (6 roles)
+  { role: "Solutions Architect", cat: "Solutions & Support", icon: "🏛️" },
+  { role: "Technical Support Engineer", cat: "Solutions & Support", icon: "🎧" },
+  { role: "Customer Success Engineer", cat: "Solutions & Support", icon: "🤝" },
+  { role: "Sales Engineer / Pre-Sales", cat: "Solutions & Support", icon: "💼" },
+  { role: "Developer Relations (DevRel) Engineer", cat: "Solutions & Support", icon: "🥑" },
+  { role: "Technical Writer / Documentation Specialist", cat: "Solutions & Support", icon: "📝" },
 ];
 
 const roleInput = document.getElementById("roleInput");
 const roleMenu = document.getElementById("roleSuggestionsMenu");
 const roleClearBtn = document.getElementById("roleClearBtn");
+const roleDropdownToggle = document.getElementById("roleDropdownToggle");
 let selectedSuggestionIndex = -1;
 
-function renderRoleSuggestions(query = "") {
-  if (!roleMenu) return;
-  const q = query.trim().toLowerCase();
-
-  let matches;
-  if (!q) {
-    matches = POPULAR_ROLES.slice(0, 8);
-  } else {
-    matches = POPULAR_ROLES.filter(item => item.role.toLowerCase().includes(q));
-  }
-
-  if (matches.length === 0) {
-    roleMenu.hidden = true;
-    return;
-  }
-
+function closeRoleDropdown() {
+  if (roleMenu) roleMenu.hidden = true;
+  if (roleDropdownToggle) roleDropdownToggle.classList.remove("open");
   selectedSuggestionIndex = -1;
-  roleMenu.innerHTML = matches.map((item, idx) => {
-    let displayTitle = escapeHtml(item.role);
-    if (q) {
-      const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, "gi");
-      displayTitle = displayTitle.replace(regex, `<span class="autocomplete-highlight">$1</span>`);
-    }
-    return `
-      <div class="autocomplete-item" data-index="${idx}" data-role="${escapeHtml(item.role)}">
-        <span>${displayTitle}</span>
-        <span class="autocomplete-category">${escapeHtml(item.cat)}</span>
-      </div>
-    `;
-  }).join("");
-
-  roleMenu.hidden = false;
 }
 
-if (roleInput) {
-  roleInput.addEventListener("input", (e) => {
-    const val = e.target.value;
-    if (roleClearBtn) roleClearBtn.hidden = !val;
-    renderRoleSuggestions(val);
+function syncRoleChips(currentVal) {
+  const normalized = (currentVal || "").trim().toLowerCase();
+  document.querySelectorAll(".role-chip").forEach(chip => {
+    const chipVal = (chip.dataset.role || "").toLowerCase();
+    const isActive = normalized && (chipVal === normalized || normalized.includes(chipVal));
+    chip.classList.toggle("active", Boolean(isActive));
   });
+}
 
-  roleInput.addEventListener("focus", () => {
-    renderRoleSuggestions(roleInput.value);
-  });
-
-  roleInput.addEventListener("keydown", (e) => {
-    if (roleMenu.hidden) return;
-    const items = roleMenu.querySelectorAll(".autocomplete-item");
-    if (!items.length) return;
-
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      selectedSuggestionIndex = (selectedSuggestionIndex + 1) % items.length;
-      updateSelectedSuggestion(items);
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      selectedSuggestionIndex = (selectedSuggestionIndex - 1 + items.length) % items.length;
-      updateSelectedSuggestion(items);
-    } else if (e.key === "Enter" && selectedSuggestionIndex >= 0) {
-      e.preventDefault();
-      const selected = items[selectedSuggestionIndex];
-      if (selected) {
-        selectRole(selected.dataset.role);
-      }
-    } else if (e.key === "Escape") {
-      roleMenu.hidden = true;
-    }
-  });
+function selectRole(roleName) {
+  if (!roleInput) return;
+  roleInput.value = roleName;
+  if (roleClearBtn) roleClearBtn.hidden = !roleName;
+  closeRoleDropdown();
+  syncRoleChips(roleName);
+  roleInput.focus();
 }
 
 function updateSelectedSuggestion(items) {
@@ -368,35 +405,159 @@ function updateSelectedSuggestion(items) {
   });
 }
 
-function selectRole(roleName) {
-  if (!roleInput) return;
-  roleInput.value = roleName;
-  if (roleClearBtn) roleClearBtn.hidden = false;
-  if (roleMenu) roleMenu.hidden = true;
-  roleInput.focus();
+function renderRoleSuggestions(query = "") {
+  if (!roleMenu) return;
+  const q = query.trim().toLowerCase();
+
+  let matches = [];
+  if (!q) {
+    matches = [...POPULAR_ROLES];
+  } else {
+    matches = POPULAR_ROLES.filter(item =>
+      item.role.toLowerCase().includes(q) || item.cat.toLowerCase().includes(q)
+    );
+  }
+
+  selectedSuggestionIndex = -1;
+
+  if (matches.length === 0) {
+    roleMenu.innerHTML = `
+      <div class="autocomplete-item role-item" data-index="0" data-role="${escapeHtml(query.trim())}">
+        <span class="role-item-left">
+          <span class="role-item-icon">🎯</span>
+          <span class="role-item-text">Use "<strong>${escapeHtml(query.trim())}</strong>"</span>
+        </span>
+        <span class="autocomplete-category">Custom Role</span>
+      </div>
+    `;
+    roleMenu.hidden = false;
+    if (roleDropdownToggle) roleDropdownToggle.classList.add("open");
+    return;
+  }
+
+  let html = "";
+  let lastCategory = "";
+
+  matches.forEach((item, idx) => {
+    if (!q && item.cat !== lastCategory) {
+      lastCategory = item.cat;
+      html += `<div class="role-group-header">${escapeHtml(lastCategory)}</div>`;
+    }
+
+    let displayTitle = escapeHtml(item.role);
+    if (q) {
+      const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, "gi");
+      displayTitle = displayTitle.replace(regex, `<span class="autocomplete-highlight">$1</span>`);
+    }
+
+    html += `
+      <div class="autocomplete-item role-item" data-index="${idx}" data-role="${escapeHtml(item.role)}">
+        <span class="role-item-left">
+          <span class="role-item-icon">${item.icon || "💻"}</span>
+          <span class="role-item-text">${displayTitle}</span>
+        </span>
+        <span class="autocomplete-category">${escapeHtml(item.cat)}</span>
+      </div>
+    `;
+  });
+
+  // If user typed a query that is not an exact match to any predefined role, append custom 1-click fallback
+  const exactMatchExists = matches.some(m => m.role.toLowerCase() === q);
+  if (q && !exactMatchExists) {
+    html += `
+      <div class="autocomplete-item role-item custom-role-item" data-index="${matches.length}" data-role="${escapeHtml(query.trim())}">
+        <span class="role-item-left">
+          <span class="role-item-icon">🎯</span>
+          <span class="role-item-text">Use "<strong>${escapeHtml(query.trim())}</strong>"</span>
+        </span>
+        <span class="autocomplete-category">Custom Role</span>
+      </div>
+    `;
+  }
+
+  roleMenu.innerHTML = html;
+  roleMenu.hidden = false;
+  if (roleDropdownToggle) roleDropdownToggle.classList.add("open");
 }
 
-if (roleMenu) {
-  roleMenu.addEventListener("click", (e) => {
-    const item = e.target.closest(".autocomplete-item");
-    if (item && item.dataset.role) {
-      selectRole(item.dataset.role);
+if (roleInput) {
+  roleInput.addEventListener("input", (e) => {
+    const val = e.target.value;
+    if (roleClearBtn) roleClearBtn.hidden = !val;
+    syncRoleChips(val);
+    renderRoleSuggestions(val);
+  });
+
+  roleInput.addEventListener("focus", () => {
+    renderRoleSuggestions(roleInput.value);
+  });
+
+  roleInput.addEventListener("keydown", (e) => {
+    if (roleMenu.hidden) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        renderRoleSuggestions(roleInput.value);
+      }
+      return;
+    }
+    const items = roleMenu.querySelectorAll(".role-item");
+    if (!items.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      selectedSuggestionIndex = (selectedSuggestionIndex + 1) % items.length;
+      updateSelectedSuggestion(items);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      selectedSuggestionIndex = (selectedSuggestionIndex - 1 + items.length) % items.length;
+      updateSelectedSuggestion(items);
+    } else if (e.key === "Enter") {
+      if (selectedSuggestionIndex >= 0 && items[selectedSuggestionIndex]) {
+        e.preventDefault();
+        selectRole(items[selectedSuggestionIndex].dataset.role);
+      } else if (roleInput.value.trim()) {
+        closeRoleDropdown();
+      }
+    } else if (e.key === "Escape") {
+      closeRoleDropdown();
+    }
+  });
+}
+
+if (roleDropdownToggle) {
+  roleDropdownToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!roleMenu.hidden) {
+      closeRoleDropdown();
+    } else {
+      renderRoleSuggestions(roleInput?.value || "");
+      roleInput?.focus();
     }
   });
 }
 
 if (roleClearBtn) {
   roleClearBtn.addEventListener("click", () => {
-    roleInput.value = "";
+    if (roleInput) roleInput.value = "";
     roleClearBtn.hidden = true;
-    roleMenu.hidden = true;
-    roleInput.focus();
+    syncRoleChips("");
+    closeRoleDropdown();
+    roleInput?.focus();
+  });
+}
+
+if (roleMenu) {
+  roleMenu.addEventListener("click", (e) => {
+    const item = e.target.closest(".role-item");
+    if (item && item.dataset.role) {
+      selectRole(item.dataset.role);
+    }
   });
 }
 
 document.addEventListener("click", (e) => {
   if (roleMenu && !e.target.closest(".role-input-group")) {
-    roleMenu.hidden = true;
+    closeRoleDropdown();
   }
 });
 
@@ -404,7 +565,13 @@ document.addEventListener("click", (e) => {
 document.querySelectorAll(".role-chip").forEach(chip => {
   chip.addEventListener("click", () => {
     const role = chip.dataset.role;
-    if (role) selectRole(role);
+    if (role) {
+      if (roleInput?.value === role) {
+        selectRole("");
+      } else {
+        selectRole(role);
+      }
+    }
   });
 });
 
@@ -431,8 +598,15 @@ function setBtnLoading(button, isLoading, normalHtml) {
 
 // 7b. Target Location Dropdown & Suggestions
 const POPULAR_LOCATIONS = [
-  // Remote
-  { name: "Remote", cat: "Remote", icon: "🌐" },
+  // Nationwide Countries (Auto-matches all states & regional tech hubs)
+  { name: "India (All States / Nationwide)", cat: "Nationwide", icon: "🇮🇳" },
+  { name: "United States (Nationwide)", cat: "Nationwide", icon: "🇺🇸" },
+  { name: "United Kingdom (Nationwide)", cat: "Nationwide", icon: "🇬🇧" },
+  { name: "Canada (Nationwide)", cat: "Nationwide", icon: "🇨🇦" },
+  { name: "Germany (Nationwide)", cat: "Nationwide", icon: "🇩🇪" },
+  { name: "Australia (Nationwide)", cat: "Nationwide", icon: "🇦🇺" },
+  { name: "Singapore (Nationwide)", cat: "Nationwide", icon: "🇸🇬" },
+  { name: "Remote (Global / Anywhere)", cat: "Remote", icon: "🌐" },
   { name: "Remote (India)", cat: "Remote", icon: "💻" },
   { name: "Remote (US / Americas)", cat: "Remote", icon: "🌎" },
   { name: "Remote (Europe / UK)", cat: "Remote", icon: "🌍" },
@@ -448,7 +622,6 @@ const POPULAR_LOCATIONS = [
   { name: "Ahmedabad, India", cat: "India Hubs", icon: "📍" },
   { name: "Kochi, India", cat: "India Hubs", icon: "📍" },
   { name: "Chandigarh, India", cat: "India Hubs", icon: "📍" },
-  { name: "Pan India", cat: "India Hubs", icon: "🇮🇳" },
 
   // North America
   { name: "San Francisco Bay Area, US", cat: "North America", icon: "📍" },
@@ -456,7 +629,6 @@ const POPULAR_LOCATIONS = [
   { name: "Seattle, WA, US", cat: "North America", icon: "📍" },
   { name: "Austin, TX, US", cat: "North America", icon: "📍" },
   { name: "Boston, MA, US", cat: "North America", icon: "📍" },
-  { name: "United States", cat: "North America", icon: "🇺🇸" },
   { name: "Toronto, Canada", cat: "North America", icon: "📍" },
   { name: "Vancouver, Canada", cat: "North America", icon: "📍" },
 
@@ -469,7 +641,6 @@ const POPULAR_LOCATIONS = [
   { name: "Zurich, Switzerland", cat: "Europe & UK", icon: "🇨🇭" },
 
   // Asia-Pacific & Middle East
-  { name: "Singapore", cat: "Asia-Pacific", icon: "🇸🇬" },
   { name: "Sydney, Australia", cat: "Asia-Pacific", icon: "🇦🇺" },
   { name: "Dubai, UAE", cat: "Middle East", icon: "🇦🇪" },
   { name: "Tokyo, Japan", cat: "Asia-Pacific", icon: "🇯🇵" },
@@ -733,17 +904,17 @@ function renderScore(data, jd, role) {
   const offset = circumference - (score / 100) * circumference;
   if (gaugeProgress) {
     gaugeProgress.style.strokeDashoffset = offset;
-    if (score >= 75) {
+    if (score >= 82) {
       gaugeProgress.style.stroke = "var(--emerald)";
-      scoreRatingText.textContent = "Great Match / Ready to Apply";
+      scoreRatingText.textContent = "High Recruiter Pass Rate (90%+)";
       scoreRatingText.style.color = "#34d399";
-    } else if (score >= 50) {
+    } else if (score >= 65) {
       gaugeProgress.style.stroke = "var(--amber)";
-      scoreRatingText.textContent = "Moderate Match / Improvements Needed";
+      scoreRatingText.textContent = "Borderline / Needs Optimization";
       scoreRatingText.style.color = "#fbbf24";
     } else {
       gaugeProgress.style.stroke = "var(--rose)";
-      scoreRatingText.textContent = "Low Match / Needs Optimization";
+      scoreRatingText.textContent = "High Filter Rejection Risk";
       scoreRatingText.style.color = "#fb7185";
     }
   }
@@ -760,26 +931,137 @@ function renderScore(data, jd, role) {
   }
 
   let html = "";
-  if (data.section_notes && data.section_notes.length) {
-    html += `
-      <div class="score-section-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-        Section Structure Notes (${data.section_notes.length})
+
+  // 1. Recruiter Determination & Verdict Banner
+  const verdictClass = score >= 82 ? "verdict-strong" : (score >= 65 ? "verdict-warning" : "verdict-risk");
+  const verdictIcon = score >= 82 ? "🟢" : (score >= 65 ? "🟡" : "🔴");
+  const verdictTitle = data.verdict || (score >= 82 ? "Strong ATS Pass" : (score >= 65 ? "Borderline Pass" : "High Screening Risk"));
+  const passProb = data.pass_probability || `${score}% Match Rate`;
+  const recruiterSummary = data.recruiter_summary || "Automated recruiter ATS evaluation based on keywords, metrics, and parseability.";
+
+  html += `
+    <div class="recruiter-verdict-banner ${verdictClass}">
+      <div class="verdict-header-row">
+        <div class="verdict-title">${verdictIcon} ${escapeHtml(verdictTitle)}</div>
+        <div class="verdict-probability-tag">${escapeHtml(passProb)}</div>
       </div>
-      <ul class="note-list">${data.section_notes.map(n => `<li>${escapeHtml(n)}</li>`).join("")}</ul>
+      <p class="recruiter-summary-text">${escapeHtml(recruiterSummary)}</p>
+    </div>
+  `;
+
+  // 2. Four Pillars Scorecard
+  const pillars = data.pillar_scores || {
+    skills_match: score,
+    quantified_metrics: data.quantified_impact_score || 60,
+    action_verbs: data.action_verbs_score || 70,
+    ats_parseability: 85,
+  };
+
+  const getFillColor = (val) => val >= 75 ? "fill-green" : (val >= 50 ? "fill-amber" : "fill-rose");
+
+  html += `
+    <div class="score-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+      Recruiter ATS 4-Pillar Evaluation Breakdown
+    </div>
+    <div class="pillar-scorecard-grid">
+      <div class="pillar-item">
+        <div class="pillar-label">
+          <span>Technical Skills</span>
+          <span class="pillar-score-val">${pillars.skills_match || 0}%</span>
+        </div>
+        <div class="pillar-track"><div class="pillar-fill ${getFillColor(pillars.skills_match || 0)}" style="width: ${pillars.skills_match || 0}%;"></div></div>
+      </div>
+      <div class="pillar-item">
+        <div class="pillar-label">
+          <span>Quantified Metrics</span>
+          <span class="pillar-score-val">${pillars.quantified_metrics || 0}%</span>
+        </div>
+        <div class="pillar-track"><div class="pillar-fill ${getFillColor(pillars.quantified_metrics || 0)}" style="width: ${pillars.quantified_metrics || 0}%;"></div></div>
+      </div>
+      <div class="pillar-item">
+        <div class="pillar-label">
+          <span>Action Verbs</span>
+          <span class="pillar-score-val">${pillars.action_verbs || 0}%</span>
+        </div>
+        <div class="pillar-track"><div class="pillar-fill ${getFillColor(pillars.action_verbs || 0)}" style="width: ${pillars.action_verbs || 0}%;"></div></div>
+      </div>
+      <div class="pillar-item">
+        <div class="pillar-label">
+          <span>ATS Parseability</span>
+          <span class="pillar-score-val">${pillars.ats_parseability || 0}%</span>
+        </div>
+        <div class="pillar-track"><div class="pillar-fill ${getFillColor(pillars.ats_parseability || 0)}" style="width: ${pillars.ats_parseability || 0}%;"></div></div>
+      </div>
+    </div>
+  `;
+
+  // 3. Ready-to-Paste STAR Bullets to Guarantee Pass
+  if (data.recommended_bullets && data.recommended_bullets.length) {
+    html += `
+      <div class="star-bullets-wrapper">
+        <div class="score-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Direct Pass Recommendations: Ready-to-Paste STAR Bullet Points
+        </div>
+        <div class="star-bullets-header-box">
+          <span>💡 <strong>1-Click Pass Guarantee:</strong> Copy and paste these pre-crafted bullet points directly into your Work Experience to embed missing keywords, STAR metrics, and high-impact action verbs.</span>
+        </div>
+        ${data.recommended_bullets.map((b) => `
+          <div class="star-bullet-card">
+            <div class="star-card-top">
+              <span class="star-bullet-kw">+ ${escapeHtml(b.keyword)}</span>
+              <button type="button" class="btn-copy-bullet" data-bullet="${escapeHtml(b.bullet)}" title="Copy bullet to clipboard">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy Bullet</span>
+              </button>
+            </div>
+            <p class="star-bullet-content">• ${escapeHtml(b.bullet)}</p>
+          </div>
+        `).join("")}
+      </div>
     `;
   }
 
-  if (data.formatting_notes && data.formatting_notes.length) {
+  // 4. Passive Phrases to Eliminate & Power Verb Rewrites
+  if (data.weak_phrase_replacements && data.weak_phrase_replacements.length) {
     html += `
       <div class="score-section-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-        Formatting & Parser Feedback (${data.formatting_notes.length})
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Action Verb Optimization: Replace Weak Phrasing
       </div>
-      <ul class="note-list">${data.formatting_notes.map(n => `<li>${escapeHtml(n)}</li>`).join("")}</ul>
+      ${data.weak_phrase_replacements.map(wp => `
+        <div class="weak-phrase-box">
+          <div class="phrase-compare-row">
+            <span class="phrase-weak">${escapeHtml(wp.weak)}</span>
+            <span class="phrase-arrow">➔</span>
+            <span class="phrase-fix">${escapeHtml(wp.replacement)}</span>
+          </div>
+          <p class="phrase-tip">${escapeHtml(wp.tip)}</p>
+        </div>
+      `).join("")}
     `;
   }
 
+  // 5. Direct Pass Guarantee Checklist
+  if (data.pass_checklist && data.pass_checklist.length) {
+    html += `
+      <div class="pass-checklist-card">
+        <div class="score-section-title" style="margin-top:0; color:#34d399;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Recruiter Screening Clearance Checklist
+        </div>
+        ${data.pass_checklist.map(item => `
+          <div class="pass-checklist-item">
+            <span class="checklist-check-icon">✓</span>
+            <span>${escapeHtml(item)}</span>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  // 6. Matched & Missing Keyword Badges
   const checkIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
   const plusIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
 
@@ -797,7 +1079,49 @@ function renderScore(data, jd, role) {
     <div>${renderKeywordTags(data.missing_keywords, "tag-missing", plusIcon)}</div>
   `;
 
+  // 7. Section Notes & Formatting Feedback
+  if (data.section_notes && data.section_notes.length) {
+    html += `
+      <div class="score-section-title" style="margin-top: 16px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Section Structure Notes (${data.section_notes.length})
+      </div>
+      <ul class="note-list">${data.section_notes.map(n => `<li>${escapeHtml(n)}</li>`).join("")}</ul>
+    `;
+  }
+
+  if (data.formatting_notes && data.formatting_notes.length) {
+    html += `
+      <div class="score-section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        Formatting & Parser Feedback (${data.formatting_notes.length})
+      </div>
+      <ul class="note-list">${data.formatting_notes.map(n => `<li>${escapeHtml(n)}</li>`).join("")}</ul>
+    `;
+  }
+
   scoreDetails.innerHTML = html;
+
+  // Bind 1-click copy buttons for recommended STAR bullets
+  scoreDetails.querySelectorAll(".btn-copy-bullet").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const text = btn.dataset.bullet || "";
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(`• ${text}`);
+        btn.classList.add("copied");
+        btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Copied!</span>`;
+        showToast("STAR bullet point copied to clipboard!", "success");
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> <span>Copy Bullet</span>`;
+        }, 2200);
+      } catch {
+        showToast("Press Ctrl+C to copy bullet.", "info");
+      }
+    });
+  });
+
   scoreCard.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 

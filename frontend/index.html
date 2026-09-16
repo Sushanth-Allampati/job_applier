@@ -177,17 +177,24 @@
           <div class="label-row">
             <span class="label-text">Target Role <span class="badge-required">*Required for search & role score</span></span>
           </div>
-          <div class="input-wrapper">
+          <div class="input-wrapper role-wrapper">
             <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" id="roleInput" placeholder="e.g. Full Stack Developer, ML Engineer, DevOps..." autocomplete="off">
-            <div id="roleClearBtn" class="input-clear-btn" hidden title="Clear input">✕</div>
+            <input type="text" id="roleInput" placeholder="Select or type role (e.g. Full Stack Developer, ML Engineer...)" autocomplete="off">
+            <div class="input-actions-right">
+              <div id="roleClearBtn" class="input-clear-btn-inline" hidden title="Clear role">✕</div>
+              <button type="button" id="roleDropdownToggle" class="dropdown-chevron-btn" title="Toggle roles dropdown" aria-label="Toggle roles dropdown">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <!-- Dynamic Autocomplete Dropdown Menu -->
-          <div id="roleSuggestionsMenu" class="autocomplete-dropdown" hidden></div>
+          <div id="roleSuggestionsMenu" class="autocomplete-dropdown role-dropdown" hidden></div>
 
           <!-- Quick Suggestion Chips -->
           <div class="role-chips-wrapper">
@@ -234,14 +241,14 @@
           <div class="location-chips-wrapper">
             <span class="chips-label">Popular:</span>
             <div class="chips-scroll">
+              <button type="button" class="location-chip" data-location="India (All States / Nationwide)">🇮🇳 India (All States)</button>
+              <button type="button" class="location-chip" data-location="United States">🇺🇸 United States</button>
               <button type="button" class="location-chip" data-location="Remote">🌐 Remote</button>
+              <button type="button" class="location-chip" data-location="United Kingdom">🇬🇧 United Kingdom</button>
+              <button type="button" class="location-chip" data-location="Canada">🇨🇦 Canada</button>
               <button type="button" class="location-chip" data-location="Bengaluru, India">Bengaluru</button>
               <button type="button" class="location-chip" data-location="Hyderabad, India">Hyderabad</button>
               <button type="button" class="location-chip" data-location="Pune, India">Pune</button>
-              <button type="button" class="location-chip" data-location="Delhi NCR, India">Delhi NCR</button>
-              <button type="button" class="location-chip" data-location="Mumbai, India">Mumbai</button>
-              <button type="button" class="location-chip" data-location="United States">🇺🇸 United States</button>
-              <button type="button" class="location-chip" data-location="London, UK">🇬🇧 London</button>
             </div>
           </div>
         </div>

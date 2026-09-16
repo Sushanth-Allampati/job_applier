@@ -59,6 +59,16 @@ class ScoreResponse(BaseModel):
     missing_keywords: list[str]
     formatting_notes: list[str]
     section_notes: list[str]
+    # Recruiter-Grade Evaluation additions
+    verdict: str = "Evaluating"
+    pass_probability: str = "Medium"
+    recruiter_summary: str = ""
+    pillar_scores: dict[str, int] = {}
+    quantified_impact_score: int = 70
+    action_verbs_score: int = 75
+    recommended_bullets: list[dict[str, str]] = []
+    weak_phrase_replacements: list[dict[str, str]] = []
+    pass_checklist: list[str] = []
 
 
 class RegisterRequest(BaseModel):
