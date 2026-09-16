@@ -206,15 +206,43 @@
           </div>
         </div>
 
-        <!-- Location Input -->
-        <div class="form-group">
-          <span class="label-text">Target Location <span class="badge-optional">Optional</span></span>
-          <div class="input-wrapper">
+        <!-- Location Input with Dropdown & Suggestions -->
+        <div class="form-group location-input-group">
+          <div class="label-row">
+            <span class="label-text">Target Location <span class="badge-optional">Optional</span></span>
+          </div>
+          <div class="input-wrapper location-wrapper">
             <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
-            <input type="text" id="locationInput" placeholder="e.g. Hyderabad, Remote, Bengaluru, London...">
+            <input type="text" id="locationInput" placeholder="Select or type location (e.g. Hyderabad, Remote, Bengaluru...)" autocomplete="off">
+            <div class="input-actions-right">
+              <div id="locationClearBtn" class="input-clear-btn-inline" hidden title="Clear location">✕</div>
+              <button type="button" id="locationDropdownToggle" class="dropdown-chevron-btn" title="Toggle locations dropdown" aria-label="Toggle locations dropdown">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Location Dropdown Menu -->
+          <div id="locationSuggestionsMenu" class="autocomplete-dropdown location-dropdown" hidden></div>
+
+          <!-- Quick Suggestion Chips for Locations -->
+          <div class="location-chips-wrapper">
+            <span class="chips-label">Popular:</span>
+            <div class="chips-scroll">
+              <button type="button" class="location-chip" data-location="Remote">🌐 Remote</button>
+              <button type="button" class="location-chip" data-location="Bengaluru, India">Bengaluru</button>
+              <button type="button" class="location-chip" data-location="Hyderabad, India">Hyderabad</button>
+              <button type="button" class="location-chip" data-location="Pune, India">Pune</button>
+              <button type="button" class="location-chip" data-location="Delhi NCR, India">Delhi NCR</button>
+              <button type="button" class="location-chip" data-location="Mumbai, India">Mumbai</button>
+              <button type="button" class="location-chip" data-location="United States">🇺🇸 United States</button>
+              <button type="button" class="location-chip" data-location="London, UK">🇬🇧 London</button>
+            </div>
           </div>
         </div>
 

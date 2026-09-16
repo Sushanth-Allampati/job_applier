@@ -543,8 +543,66 @@ textarea {
 }
 
 /* Autocomplete Dropdown */
-.role-input-group {
+.role-input-group,
+.location-input-group {
   position: relative;
+}
+
+.location-wrapper input {
+  padding-right: 72px;
+}
+
+.input-actions-right {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 5;
+}
+
+.input-clear-btn-inline {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  transition: var(--transition);
+}
+
+.input-clear-btn-inline:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.dropdown-chevron-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+}
+
+.dropdown-chevron-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+}
+
+.dropdown-chevron-btn.open svg {
+  transform: rotate(180deg);
+  color: var(--primary);
 }
 
 .autocomplete-dropdown {
@@ -561,6 +619,40 @@ textarea {
   z-index: 100;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(99, 102, 241, 0.2);
   backdrop-filter: blur(20px);
+}
+
+.location-dropdown {
+  max-height: 300px;
+}
+
+.location-group-header {
+  padding: 8px 14px 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.location-group-header:first-child {
+  border-top: none;
+}
+
+.location-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.location-item-icon {
+  font-size: 0.95rem;
+  opacity: 0.9;
 }
 
 .autocomplete-item {
@@ -599,7 +691,8 @@ textarea {
 }
 
 /* Quick Suggestion Chips */
-.role-chips-wrapper {
+.role-chips-wrapper,
+.location-chips-wrapper {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -619,7 +712,8 @@ textarea {
   flex-wrap: wrap;
 }
 
-.role-chip {
+.role-chip,
+.location-chip {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-subtle);
   color: var(--text-muted);
@@ -631,11 +725,20 @@ textarea {
   transition: var(--transition);
 }
 
-.role-chip:hover {
+.role-chip:hover,
+.location-chip:hover {
   background: rgba(99, 102, 241, 0.15);
   border-color: rgba(99, 102, 241, 0.4);
   color: #c7d2fe;
   transform: translateY(-1px);
+}
+
+.role-chip.active,
+.location-chip.active {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
 }
 
 /* Position Type & Experience Selectors (RoboApply Style) */

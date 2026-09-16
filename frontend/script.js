@@ -429,10 +429,249 @@ function setBtnLoading(button, isLoading, normalHtml) {
   }
 }
 
+// 7b. Target Location Dropdown & Suggestions
+const POPULAR_LOCATIONS = [
+  // Remote
+  { name: "Remote", cat: "Remote", icon: "🌐" },
+  { name: "Remote (India)", cat: "Remote", icon: "💻" },
+  { name: "Remote (US / Americas)", cat: "Remote", icon: "🌎" },
+  { name: "Remote (Europe / UK)", cat: "Remote", icon: "🌍" },
+
+  // Top Indian Tech Hubs
+  { name: "Bengaluru, India", cat: "India Hubs", icon: "📍" },
+  { name: "Hyderabad, India", cat: "India Hubs", icon: "📍" },
+  { name: "Pune, India", cat: "India Hubs", icon: "📍" },
+  { name: "Delhi NCR (Gurgaon / Noida), India", cat: "India Hubs", icon: "📍" },
+  { name: "Mumbai, India", cat: "India Hubs", icon: "📍" },
+  { name: "Chennai, India", cat: "India Hubs", icon: "📍" },
+  { name: "Kolkata, India", cat: "India Hubs", icon: "📍" },
+  { name: "Ahmedabad, India", cat: "India Hubs", icon: "📍" },
+  { name: "Kochi, India", cat: "India Hubs", icon: "📍" },
+  { name: "Chandigarh, India", cat: "India Hubs", icon: "📍" },
+  { name: "Pan India", cat: "India Hubs", icon: "🇮🇳" },
+
+  // North America
+  { name: "San Francisco Bay Area, US", cat: "North America", icon: "📍" },
+  { name: "New York, US", cat: "North America", icon: "📍" },
+  { name: "Seattle, WA, US", cat: "North America", icon: "📍" },
+  { name: "Austin, TX, US", cat: "North America", icon: "📍" },
+  { name: "Boston, MA, US", cat: "North America", icon: "📍" },
+  { name: "United States", cat: "North America", icon: "🇺🇸" },
+  { name: "Toronto, Canada", cat: "North America", icon: "📍" },
+  { name: "Vancouver, Canada", cat: "North America", icon: "📍" },
+
+  // Europe & UK
+  { name: "London, UK", cat: "Europe & UK", icon: "🇬🇧" },
+  { name: "Berlin, Germany", cat: "Europe & UK", icon: "🇩🇪" },
+  { name: "Amsterdam, Netherlands", cat: "Europe & UK", icon: "🇳🇱" },
+  { name: "Dublin, Ireland", cat: "Europe & UK", icon: "🇮🇪" },
+  { name: "Paris, France", cat: "Europe & UK", icon: "🇫🇷" },
+  { name: "Zurich, Switzerland", cat: "Europe & UK", icon: "🇨🇭" },
+
+  // Asia-Pacific & Middle East
+  { name: "Singapore", cat: "Asia-Pacific", icon: "🇸🇬" },
+  { name: "Sydney, Australia", cat: "Asia-Pacific", icon: "🇦🇺" },
+  { name: "Dubai, UAE", cat: "Middle East", icon: "🇦🇪" },
+  { name: "Tokyo, Japan", cat: "Asia-Pacific", icon: "🇯🇵" },
+];
+
+const locationInput = document.getElementById("locationInput");
+const locationMenu = document.getElementById("locationSuggestionsMenu");
+const locationClearBtn = document.getElementById("locationClearBtn");
+const locationDropdownToggle = document.getElementById("locationDropdownToggle");
+let selectedLocationIndex = -1;
+
+function closeLocationDropdown() {
+  if (locationMenu) locationMenu.hidden = true;
+  if (locationDropdownToggle) locationDropdownToggle.classList.remove("open");
+  selectedLocationIndex = -1;
+}
+
+function syncLocationChips(currentVal) {
+  const normalized = (currentVal || "").trim().toLowerCase();
+  document.querySelectorAll(".location-chip").forEach(chip => {
+    const chipVal = (chip.dataset.location || "").toLowerCase();
+    const isActive = normalized && (chipVal === normalized || normalized.startsWith(chipVal));
+    chip.classList.toggle("active", Boolean(isActive));
+  });
+}
+
+function selectLocation(locName) {
+  if (!locationInput) return;
+  locationInput.value = locName;
+  if (locationClearBtn) locationClearBtn.hidden = !locName;
+  closeLocationDropdown();
+  syncLocationChips(locName);
+}
+
+function updateSelectedLocation(items) {
+  items.forEach((item, idx) => {
+    item.classList.toggle("selected", idx === selectedLocationIndex);
+    if (idx === selectedLocationIndex) {
+      item.scrollIntoView({ block: "nearest" });
+    }
+  });
+}
+
+function renderLocationDropdown(query = "") {
+  if (!locationMenu) return;
+  const q = query.trim().toLowerCase();
+
+  let matches = [];
+  if (!q) {
+    matches = [...POPULAR_LOCATIONS];
+  } else {
+    matches = POPULAR_LOCATIONS.filter(item =>
+      item.name.toLowerCase().includes(q) || item.cat.toLowerCase().includes(q)
+    );
+  }
+
+  selectedLocationIndex = -1;
+
+  if (matches.length === 0) {
+    locationMenu.innerHTML = `
+      <div class="autocomplete-item location-item" data-index="0" data-location="${escapeHtml(query.trim())}">
+        <span class="location-item-left">
+          <span class="location-item-icon">📍</span>
+          <span class="location-item-text">Use "<strong>${escapeHtml(query.trim())}</strong>"</span>
+        </span>
+        <span class="autocomplete-category">Custom</span>
+      </div>
+    `;
+    locationMenu.hidden = false;
+    if (locationDropdownToggle) locationDropdownToggle.classList.add("open");
+    return;
+  }
+
+  let html = "";
+  let lastCategory = "";
+
+  matches.forEach((item, idx) => {
+    if (!q && item.cat !== lastCategory) {
+      lastCategory = item.cat;
+      html += `<div class="location-group-header">${escapeHtml(lastCategory)}</div>`;
+    }
+
+    let displayTitle = escapeHtml(item.name);
+    if (q) {
+      const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, "gi");
+      displayTitle = displayTitle.replace(regex, `<span class="autocomplete-highlight">$1</span>`);
+    }
+
+    html += `
+      <div class="autocomplete-item location-item" data-index="${idx}" data-location="${escapeHtml(item.name)}">
+        <span class="location-item-left">
+          <span class="location-item-icon">${item.icon || "📍"}</span>
+          <span class="location-item-text">${displayTitle}</span>
+        </span>
+        <span class="autocomplete-category">${escapeHtml(item.cat)}</span>
+      </div>
+    `;
+  });
+
+  locationMenu.innerHTML = html;
+  locationMenu.hidden = false;
+  if (locationDropdownToggle) locationDropdownToggle.classList.add("open");
+}
+
+if (locationInput) {
+  locationInput.addEventListener("input", (e) => {
+    const val = e.target.value;
+    if (locationClearBtn) locationClearBtn.hidden = !val;
+    syncLocationChips(val);
+    renderLocationDropdown(val);
+  });
+
+  locationInput.addEventListener("focus", () => {
+    renderLocationDropdown(locationInput.value);
+  });
+
+  locationInput.addEventListener("keydown", (e) => {
+    if (locationMenu.hidden) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        renderLocationDropdown(locationInput.value);
+      }
+      return;
+    }
+    const items = locationMenu.querySelectorAll(".location-item");
+    if (!items.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      selectedLocationIndex = (selectedLocationIndex + 1) % items.length;
+      updateSelectedLocation(items);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      selectedLocationIndex = (selectedLocationIndex - 1 + items.length) % items.length;
+      updateSelectedLocation(items);
+    } else if (e.key === "Enter") {
+      if (selectedLocationIndex >= 0 && items[selectedLocationIndex]) {
+        e.preventDefault();
+        selectLocation(items[selectedLocationIndex].dataset.location);
+      } else if (locationInput.value.trim()) {
+        closeLocationDropdown();
+      }
+    } else if (e.key === "Escape") {
+      closeLocationDropdown();
+    }
+  });
+}
+
+if (locationDropdownToggle) {
+  locationDropdownToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!locationMenu.hidden) {
+      closeLocationDropdown();
+    } else {
+      renderLocationDropdown(locationInput?.value || "");
+      locationInput?.focus();
+    }
+  });
+}
+
+if (locationClearBtn) {
+  locationClearBtn.addEventListener("click", () => {
+    if (locationInput) locationInput.value = "";
+    locationClearBtn.hidden = true;
+    syncLocationChips("");
+    closeLocationDropdown();
+    locationInput?.focus();
+  });
+}
+
+if (locationMenu) {
+  locationMenu.addEventListener("click", (e) => {
+    const item = e.target.closest(".location-item");
+    if (item && item.dataset.location) {
+      selectLocation(item.dataset.location);
+    }
+  });
+}
+
+document.addEventListener("click", (e) => {
+  if (locationMenu && !e.target.closest(".location-input-group")) {
+    closeLocationDropdown();
+  }
+});
+
+// Clickable Location Suggestion Chips
+document.querySelectorAll(".location-chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    const loc = chip.dataset.location;
+    if (loc) {
+      if (locationInput?.value === loc) {
+        selectLocation("");
+      } else {
+        selectLocation(loc);
+      }
+    }
+  });
+});
+
 // 8. ATS Resume Scoring (Job Description is 100% OPTIONAL)
 const scoreBtn = document.getElementById("scoreBtn");
 const jdInput = document.getElementById("jdInput");
-const locationInput = document.getElementById("locationInput");
 const scoreCard = document.getElementById("scoreCard");
 const scoreCircle = document.getElementById("scoreCircle");
 const gaugeProgress = document.getElementById("gaugeProgress");
